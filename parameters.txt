@@ -1,0 +1,6 @@
+150 frančizė (minimalus kliento sumokamas mokėstis įvykus avarijai)
+70 atitenka servisui iš frančizės
+8 darbuotojo valandinė alga
+20 darbuotojų skaičius
+40 tikimybė, kad mašiną pristatys VIP klientas
+50 tikimybė, kad mašiną pristatys paprastas klientas
