@@ -21,10 +21,10 @@
 // Parameters
 LongNumber A; // frančizė (minimalus kliento sumokamas mokėstis įvykus avarijai)
 LongNumber B; // VIP kliento mokamas priedas
-int K = 2; // darbuotoju skaicius
-int U = 10; // darbuotojo valandinė alga
-int T1 = 30; // tikimybė procentais, kad mašiną pristatys VIP klientas
-int T2 = 50; // tikimybė procentais, kad mašiną pristatys paprastas klientas
+int K; // darbuotoju skaicius
+int U; // darbuotojo valandinė alga
+int T1; // tikimybė procentais, kad mašiną pristatys VIP klientas
+int T2; // tikimybė procentais, kad mašiną pristatys paprastas klientas
 
 typedef struct {
   int id;
@@ -32,12 +32,56 @@ typedef struct {
   int hoursLeft;  
 } Client;
 
+int skipLine(FILE *fp) {
+  if (fp == NULL)
+    return 1;
+  char c;
+  while ((c = fgetc(fp)) != '\n') {
+    if (c == EOF) {
+      return 1;
+    }
+  }
+  return 0;
+}
+
+int nextInt(FILE *fp, int *p) {
+  if (fscanf(fp, "%u", p) != 1)
+    return 1;
+  skipLine(fp);
+  return 0;
+}
+
 int readFile(FILE *fp) {
   if (fp == NULL)
     return 1;
   char inputBuffer[BUFF_SIZE + 1];
-  fscanf(fp, "%" xstr(BUFF_SIZE) "[0-9]", inputBuffer);
-  A = longNumberCreateFromString(inputBuffer);
+  int flag = 0;
+
+  if (fscanf(fp, "%" xstr(BUFF_SIZE) "[0-9]", inputBuffer) != 1)
+    flag |= 1;
+  A = longNumberCreateFromString(inputBuffer);  
+
+  if (skipLine(fp) == 1)
+    flag |= 1;
+  if (fscanf(fp, "%" xstr(BUFF_SIZE) "[0-9]", inputBuffer) != 1)
+    flag |= 1;
+  B = longNumberCreateFromString(inputBuffer);
+
+  if (skipLine(fp) == 1)
+    flag |= 1;
+
+  flag |= nextInt(fp, &U);
+  flag |= nextInt(fp, &K);
+  flag |= nextInt(fp, &T1);
+  flag |= nextInt(fp, &T2);
+
+  if (flag || A == NULL || B == NULL) {
+    printf("Invalid file format\n");
+    longNumberFree(A);
+    longNumberFree(B);
+    return 1;
+  }
+
   return 0;
 }
 
@@ -128,17 +172,47 @@ LongNumber run(int with_vip_clients, int debug) {
 }
 
 int main(int argc, const char *argv[]) {
-  A = longNumberCreateFromLL(200);
-  B = longNumberCreateFromLL(100);
-  run(1, 1);
-  // if (argc < 2) {
-  //   printf("Usage: main.exe input_file\n");
-  //   return 1;
-  // }
-  // FILE *fp = fopen(argv[1], "r");
-  // if (fp == NULL) {
-  //   printf("Cannot open file\n");
-  //   return 1;
-  // }
-  // readFile(fp);
+  printf("Car service modeling\nDebug mode activation: main.exe input_file debug > output_file\n\n");
+
+  if (argc < 2) {
+    printf("Usage: main.exe input_file [debug]\n");
+    return 1;
+  }
+  FILE *fp = fopen(argv[1], "r");
+  if (fp == NULL) {
+    printf("Cannot open file\n");
+    return 1;
+  }
+  if (readFile(fp) == 1)
+      return 1;
+
+  int debug = 0;
+  if (argc >= 3 && strcmp(argv[2], "debug") == 0)
+    debug = 1;
+
+  if (debug) {
+    printf("Parameters:\n");
+    printf("A(frančizė)= %s\n", longNumberConvertToString(A));
+    printf("B(VIP mokėstis)= %s\n", longNumberConvertToString(B));
+    printf("U(darbuotojo valandinė alga)= %d\n", U);
+    printf("K(darbuotojų skaičius)= %d\n", K);
+    printf("T1(VIP tikimybė)= %d\n", T1);
+    printf("T2(paprasto tikimybė)= %d\n\n", T2);
+  }
+
+  printf("Calculating VIP profit\n");
+  LongNumber vipProfit = run(1, debug);
+  printf("VIP profit is %s\n", longNumberConvertToString(vipProfit));
+
+  printf("Calculating regular profit\n");
+  LongNumber regularProfit = run(0, debug);
+  printf("Regular profit is %s\n", longNumberConvertToString(regularProfit));
+
+  int cmp = longNumberCompare(vipProfit, regularProfit);
+  printf("%s\n", cmp < 0 ? "Non-VIP profit is bigger" : (cmp > 0 ? "VIP profit is bigger" : "Profits are equal"));
+  longNumberFree(A);
+  longNumberFree(B);
+  longNumberFree(vipProfit);
+  longNumberFree(regularProfit);
+  return 0;
 }
