@@ -27,3 +27,23 @@ darbuotojų skaičius.   Kiti naudotini dydžiai: T1 - tikimybė procentais, kad
 mašiną pristatys VIP klientas, T2 - tikimybė procentais, kad mašiną pristatys
 paprastas klientas, TR - atsitiktinis dydis valandomis, kurio reikia vienam
 darbuotojui sutvarkyti atvežtą mašiną (tarkime, jog 1<= TR <=5*K).
+
+## Realizacija + patikslinimai
+
+Servisas dirba nuo 8 iki 17h. Viršvalandžiai skaičiuojami nuo 9 iki 23h. VIP
+nariai neaptarnaujami nuo 0 iki 8h. Modeliavimo laikotarpis - 10 dienų. Vieną
+mašiną gali aptarnauti tik vienas darbuotojas, tad, jeigu yra 5 darbuotojai ir
+6 mašinos, viena iš mašinų nebus aptarnauta tą valandą. Darbuotojai, kuriems
+nėra paskirta mašina, negauna algos. VIP klientas moka frančizę (A) + VIP
+mokėstį (B), paprastas klientas moka tik frančizę. Mašinos atvežamos į servisą
+tik darbo valandomis. 
+
+## Paleidimas
+
+```main.exe parametrų_failas [debug] > išvedimo_failas```
+* Paleidimas su `debug` išveda kiekvienos valandos įvykius.
+* Pavyzdnis parametrų failas: `parameters.txt`
+
+## Panauduoti ADT
+* Ilgas sveikas skaičius (savo)
+* Prioritetinė eilė (brk8845)

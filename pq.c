@@ -16,7 +16,7 @@ PriorityQueue *priorityQueueClone(PriorityQueue *adt)
     new_adt->items = malloc(MAX_SIZE * sizeof(char *));
     for (int i = 0; i < adt->count; i++)
     {
-        new_adt->items[i] = strdup(adt->items[i]);
+        new_adt->items[i] = adt->items[i];
     }
     return new_adt;
 }

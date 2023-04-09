@@ -185,6 +185,7 @@ int main(int argc, const char *argv[]) {
   }
   if (readFile(fp) == 1)
       return 1;
+  fclose(fp);
 
   int debug = 0;
   if (argc >= 3 && strcmp(argv[2], "debug") == 0)
