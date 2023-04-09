@@ -46,4 +46,4 @@ tik darbo valandomis.
 
 ## Panauduoti ADT
 * Ilgas sveikas skaičius (savo)
-* Prioritetinė eilė (brk8845)
+* Prioritetinė eilė (brka8845)
