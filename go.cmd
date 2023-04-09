@@ -8,4 +8,4 @@ goto :toliau
 make
 
 :toliau
-main.exe
+main.exe parameters.txt
